@@ -103,10 +103,10 @@ class TestFindClosest(unittest2.TestCase):
 		self.assertEqual(result.name, "E")
 		self.assertEqual(result.coordinates, (3.7,0.8))
 
-	def test_random_1000_points(self):
-		total_runs = 10
+	def test_1000_random_02D_points(self):
+		total_runs = 5
 		for run_num in range(1, total_runs + 1):
-			print("Testing 1000 random points, run %d/%d" % (run_num, total_runs))
+			print("Testing 1000 random 2D points, run %d/%d" % (run_num, total_runs))
 			
 			def rand_val():
 				# Choose values between -1 and 1.
@@ -118,6 +118,33 @@ class TestFindClosest(unittest2.TestCase):
 			# Make 10 random points, with 10 random names.
 			neighbors_coords = [
 				(uuid.uuid4().hex, rand_val(), rand_val())
+				for _ in range(1000)
+			]
+			neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)
+
+			# Generate a random reference location.
+			ref_location = (rand_val(), rand_val())
+			tree = build_kd_tree(neighbors_df)
+			result = find_closest(ref_location, tree)
+			expected_name, expected_coords = find_closest_with_brute_force(neighbors_df, ref_location)
+			self.assertEqual(result.name, expected_name)
+			self.assertEqual(result.coordinates, expected_coords)
+
+	def test_1000_random_10D_points(self):
+		total_runs = 5
+		for run_num in range(1, total_runs + 1):
+			print("Testing 1000 random 10D points, run %d/%d" % (run_num, total_runs))
+			
+			def rand_val():
+				# Choose values between -1 and 1.
+				r = random.randint(-1000, 1000)
+				while r == 0:
+					r = random.randint(-1000, 1000)
+				return 1. / r
+
+			# Make 10 random points, with 10 random names.
+			neighbors_coords = [
+				(uuid.uuid4().hex,) + tuple((rand_val() for _ in range(10)))
 				for _ in range(1000)
 			]
 			neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)

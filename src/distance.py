@@ -1,12 +1,14 @@
-def square_euclidean_distance(coords1, coords2):
-	lon1, lat1 = coords1
-	lon2, lat2 = coords2
-
-	return (lat2 - lat1)**2 + (lon2 - lon1)**2
+def square_euclidean_distance(p1, p2):
+	'''
+	Since we're only comparing distances, we simply
+	calculate the Euclidean Distance without taking the 
+	square root at the end.
+	'''
+	return sum((x[0] - x[1])**2 for x in zip(p1,p2))
 
 
 # "distance" is the default implenenation of the distance function.
 # In addition to euclidean distances, the haversine formula becomes
 # necessary when using latitude and longitude coordinates over
-# large distances
+# large distances.
 distance = square_euclidean_distance
