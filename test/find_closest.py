@@ -147,8 +147,12 @@ class TestFindClosest(unittest2.TestCase):
 
 	def test_1000_random_10D_points(self):
 		total_runs = 5
+		num_dimensions = 10
 		for run_num in range(1, total_runs + 1):
-			print("Testing 1000 random 10D points, run %d/%d" % (run_num, total_runs))
+			print(
+				"Testing 1000 random 10D points, run" +
+				"%d/%d" % (run_num, total_runs)
+			)
 
 			def rand_val():
 				# Choose values between -1 and 1.
@@ -159,13 +163,14 @@ class TestFindClosest(unittest2.TestCase):
 
 			# Make 10 random points, with 10 random names.
 			neighbors_coords = [
-				(uuid.uuid4().hex,) + tuple((rand_val() for _ in range(10)))
+				(uuid.uuid4().hex,) +
+				tuple((rand_val() for _ in range(num_dimensions)))
 				for _ in range(1000)
 			]
 			neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)
 
 			# Generate a random reference location.
-			ref_location = (rand_val(), rand_val())
+			ref_location = tuple(rand_val() for _ in range(num_dimensions))
 			tree = build_kd_tree(neighbors_df)
 			result = find_closest(ref_location, tree)
 			expected_name, expected_coords = find_closest_with_brute_force(

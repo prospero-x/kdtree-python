@@ -73,23 +73,30 @@ class KdNode:
 		return True
 
 
-def build_kd_tree(neighbors, depth = 0, num_dimensions = 2):
-
+def build_kd_tree(neighbors, depth = 0):
+	'''
+	neighbors: a Pandas Dataframe consisting of integer-valued columns,
+		which refer to each dimension, and whose index represents
+		the name of each point.
+	depth: the current depth of the tree, for determining the axis
+	returns: KDNode representing root of the KDTree
+	'''
 	if neighbors is None or neighbors.empty:
 		return None
 
+	num_dimensions = neighbors.shape[1]
 	axis = depth % num_dimensions
 
 	sorted_df = neighbors.sort_values(by=[axis])
 
-	median_idx = int(len(sorted_df) / 2)
+	med_idx = int(len(sorted_df) / 2)
 
-	next_root = sorted_df.iloc[median_idx]
+	next_root = sorted_df.iloc[med_idx]
 	next_root_coords = tuple(next_root)
 	return KdNode(
 		next_root_coords,
-		build_kd_tree(sorted_df.iloc[:median_idx], depth = depth + 1),
-		build_kd_tree(sorted_df.iloc[median_idx + 1:], depth = depth + 1),
+		build_kd_tree(sorted_df.iloc[:med_idx], depth = depth + 1),
+		build_kd_tree(sorted_df.iloc[med_idx + 1:], depth = depth + 1),
 		name = next_root.name,
 		axis = axis
 	)

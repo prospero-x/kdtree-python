@@ -44,7 +44,3 @@ class TestSquareEuclideanDistance(unittest2.TestCase):
 		result = square_euclidean_distance(c1, c2)
 		expected = distance.euclidean(c1, c2) ** 2
 		self.assertDistancesClose(result, expected)
-
-
-if __name__ == '__main__':
-	unittest2.main()
