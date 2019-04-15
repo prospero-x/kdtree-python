@@ -7,7 +7,7 @@ This library implements a [k-d-tree](https://en.wikipedia.org/wiki/K-d_tree) as 
 Python 3 is required.
 
 ## Distance Formula
-This library uses a modification of the [Euclidean Distance Formula](https://en.wikipedia.org/wiki/Euclidean_distance), whereby The modification the square of the Euclidean Distance, rather than the Euclidean Distance itself, is used. This optimization is possible because we're only comparing distances rather than measuring their absolute values. Note that, if using this library to find closest neighbors with 2-Dimensional geographical coordinates, the Euclidean Distance Formula will only be accurate for small distances. For large distances, the [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) is needed.
+This library uses a modification of the [Euclidean Distance Formula](https://en.wikipedia.org/wiki/Euclidean_distance), whereby the square of the Euclidean Distance, rather than the Euclidean Distance itself, is used. This optimization is possible because we're only comparing distances rather than measuring their absolute values. Note that, if using this library to find closest neighbors with 2-dimensional geographical coordinates, the Euclidean Distance Formula will only be accurate for small distances. For large distances, the [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) is needed.
 
 ## Example
 

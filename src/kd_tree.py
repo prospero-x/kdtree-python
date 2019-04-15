@@ -27,7 +27,7 @@ class KdNode:
 		# and the splitting plane (described by this node) is
 		# simply a matter of finding the distance between the ref_location
 		# and point X, where point X is the closest point on the splitting
-		# point to the ref_location
+		# plane to the ref_location
 		#
 		# Point X is calculated by preserving all values of ref_location
 		# except self.axis.
