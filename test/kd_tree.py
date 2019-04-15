@@ -1,50 +1,32 @@
 import unittest2
-from src import build_kd_tree, KdNode, Stack
+from src import build_kd_tree, KdNode
 import pandas as pd
-import pdb
 
-
-def print_kd_tree(root):
-	s = Stack()
-	s.push(root)
-
-	while not s.empty():
-		current_node = s.pop()
-		print(current_node.coordinates)
-
-		if current_node.left_child is not None:
-			print("\t left child: %s" % str(current_node.left_child.coordinates))
-			s.push(current_node.left_child)
-
-		if current_node.right_child is not None:
-			print("\t right child: %s" % str(current_node.right_child.coordinates))
-			s.push(current_node.right_child)
 
 class TestKdTreeEqualityOperator(unittest2.TestCase):
 
 	def test_none(self):
-		tree = KdNode((0,0), None, None)
-		self.assertTrue(tree != None)
+		tree = KdNode((0, 0), None, None)
+		self.assertIsNotNone(tree)
 
 	def test_identical_single_node_trees(self):
-		tree1 = KdNode((0,0), None, None)
-		tree2 = KdNode((0,0), None, None)
-		self.assertTrue(tree1 == tree2)
+		tree1 = KdNode((0, 0), None, None)
+		tree2 = KdNode((0, 0), None, None)
+		self.assertEqual(tree1, tree2)
 
 	def test_different_single_node_tree(self):
-		tree1 = KdNode((0,0), None, None)
-		tree2 = KdNode((1,0), None, None)
-		self.assertTrue(tree1 != tree2)
-
+		tree1 = KdNode((0, 0), None, None)
+		tree2 = KdNode((1, 0), None, None)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_identical_multi_node_unbalanced_trees(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -53,12 +35,12 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					(2,2),
-					left_child = KdNode((3,3), None, None),
+					(2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -66,17 +48,16 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 			right_child = None
 		)
 
-		self.assertTrue(tree1 == tree2)
-
+		self.assertEqual(tree1, tree2)
 
 	def test_multi_node_unbalanced_trees_with_different_root(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -85,12 +66,12 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (-1,-1),
+			coords = (-1, -1),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					(2,2),
-					left_child = KdNode((3,3), None, None),
+					(2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -98,16 +79,16 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 			right_child = None
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_multi_node_unbalanced_trees_with_different_middle_nodes(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -116,12 +97,12 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (-1,-1), 
+				coords = (-1, -1),
 				left_child = KdNode(
-					(2,2),
-					left_child = KdNode((3,3), None, None),
+					(2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -129,16 +110,16 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 			right_child = None
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_multi_node_unbalanced_trees_with_different_leafs(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
 					right_child = None
 				),
 				right_child = None
@@ -147,14 +128,14 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					(2,2),
+					(2, 2),
 					left_child = KdNode(
-						coordinates = (3,3), 
-						left_child = KdNode((4,4), None, None),
+						coords = (3, 3),
+						left_child = KdNode((4, 4), None, None),
 						right_child = None,
 					),
 					right_child = None
@@ -164,33 +145,33 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 			right_child = None
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_identical_multi_node_balanced_trees(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
@@ -198,63 +179,62 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
 			),
 		)
 
-		self.assertTrue(tree1 == tree2)
-
+		self.assertEqual(tree1, tree2)
 
 	def test_multi_node_balanced_trees_with_different_roots(self):
 		tree1 = KdNode(
-			coordinates = (-1,-1),
+			coords = (-1, -1),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
@@ -262,62 +242,62 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
 			),
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_multi_node_balanced_trees_with_different_middle_nodes(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (20,20), 
+				coords = (20, 20),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
@@ -325,62 +305,62 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
 			),
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 	def test_multi_node_balanced_trees_with_different_leafs(self):
 		tree1 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((12, 12), None, None),
 					right_child = None
 				)
@@ -388,36 +368,36 @@ class TestKdTreeEqualityOperator(unittest2.TestCase):
 		)
 
 		tree2 = KdNode(
-			coordinates = (0,0),
+			coords = (0, 0),
 			left_child = KdNode(
-				coordinates = (1,1), 
+				coords = (1, 1),
 				left_child = KdNode(
-					coordinates = (2,2),
-					left_child = KdNode((3,3), None, None),
-					right_child = KdNode((4,4), None, None)
+					coords = (2, 2),
+					left_child = KdNode((3, 3), None, None),
+					right_child = KdNode((4, 4), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (5,5),
-					left_child = KdNode((6,6), None, None),
+					coords = (5, 5),
+					left_child = KdNode((6, 6), None, None),
 					right_child = None
 				)
 			),
 			right_child = KdNode(
-				coordinates = (7,7), 
+				coords = (7, 7),
 				left_child = KdNode(
-					coordinates = (8,8),
-					left_child = KdNode((9,9), None, None),
-					right_child = KdNode((10,10), None, None)
+					coords = (8, 8),
+					left_child = KdNode((9, 9), None, None),
+					right_child = KdNode((10, 10), None, None)
 				),
 				right_child = KdNode(
-					coordinates = (11,11),
+					coords = (11, 11),
 					left_child = KdNode((99, 99), None, None),
 					right_child = None
 				)
 			),
 		)
 
-		self.assertTrue(tree1 != tree2)
+		self.assertNotEqual(tree1, tree2)
 
 
 class TestBuildKdTree(unittest2.TestCase):
@@ -425,14 +405,14 @@ class TestBuildKdTree(unittest2.TestCase):
 	def coords_to_df(self, coords):
 		'''
 		Takes a list of N-dimensional points and returns a pandas dataframe
-		in which each column X has an integer name and represents the value along
-		axis X. There is no index.
+		in which each column X has an integer name and represents the value
+		along axis X. There is no index.
 
 		ex. coords: ((1, 1, 1), (2, 4, 5), (3, 7, 5))
-			returns: 
-			   pd.DataFrame[
-						    [   0  1  2]
-						    [0  1  1  1]
+			returns:
+				pd.DataFrame[
+							[   0  1  2]
+							[0  1  1  1]
 							[1  2  4  5]
 							[2  3  7  5]]
 		'''
@@ -444,134 +424,134 @@ class TestBuildKdTree(unittest2.TestCase):
 		self.assertIsNone(tree)
 
 	def test_build_single_node(self):
-		df  = self.coords_to_df([(0,0),])
+		df = self.coords_to_df([(0, 0), ])
 
 		tree = build_kd_tree(df)
-		expected = KdNode((0,0), None, None)
+		expected = KdNode((0, 0), None, None)
 
 		self.assertTrue(tree == expected)
 
-
 	def test_build_two_nodes(self):
-		df = self.coords_to_df([(0,0), (1,1)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df([(0, 0), (1, 1)])
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (1,1),
-			left_child = KdNode((0,0), None, None),
+			coords = (1, 1),
+			left_child = KdNode((0, 0), None, None),
 			right_child = None
 		)
 
-		self.assertTrue(tree == expected)
-
+		self.assertEqual(result, expected)
 
 	def test_build_three_nodes(self):
-		df = self.coords_to_df([(0,0), (1,1), (2,2)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df([(0, 0), (1, 1), (2, 2)])
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (1,1),
-			left_child = KdNode((0,0), None, None),
-			right_child = KdNode((2,2), None, None)
+			coords = (1, 1),
+			left_child = KdNode((0, 0), None, None),
+			right_child = KdNode((2, 2), None, None)
 		)
 
-		self.assertTrue(tree == expected)
+		self.assertEqual(result, expected)
 
 	def test_build_many_nodes_1(self):
 		'''
 		Many nodes tests: The idea is that if we choose random datasets
-		for each test, two random datasets might overlap such that the two 
-		tests are actually testing the same thing. 
+		for each test, two random datasets might overlap such that the two
+		tests are actually testing the same thing.
 
-		In order to cover more corner cases, we start with a non-trivial 
+		In order to cover more corner cases, we start with a non-trivial
 		dataset and change it slightly for each new test.
 		'''
-		df = self.coords_to_df([(2,7), (5,4), (9,6), (4,3), (8,1)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df([(2, 7), (5, 4), (9, 6), (4, 3), (8, 1)])
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (5,4),
+			coords = (5, 4),
 			left_child = KdNode(
-				coordinates = (2,7), 
-				left_child = KdNode((4,3), None, None),
+				coords = (2, 7),
+				left_child = KdNode((4, 3), None, None),
 				right_child = None
 			),
 			right_child = KdNode(
-				coordinates = (9,6), 
-				left_child = KdNode((8,1), None, None),
+				coords = (9, 6),
+				left_child = KdNode((8, 1), None, None),
 				right_child = None
 			)
 		)
 
-		self.assertTrue(tree == expected)
+		self.assertEqual(result, expected)
 
 	def test_build_many_nodes_2(self):
 		'''
 		One more node than the previous test.
 		'''
-		df = self.coords_to_df([(2,7), (5,4), (9,6), (4,3), (8,1), (7,2)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df(
+			[(2, 7), (5, 4), (9, 6), (4, 3), (8, 1), (7, 2)]
+		)
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (7,2),
+			coords = (7, 2),
 			left_child = KdNode(
-				coordinates = (5,4), 
-				left_child = KdNode((4,3), None, None),
-				right_child = KdNode((2,7), None, None)
+				coords = (5, 4),
+				left_child = KdNode((4, 3), None, None),
+				right_child = KdNode((2, 7), None, None)
 			),
 			right_child = KdNode(
-				coordinates = (9,6), 
-				left_child = KdNode((8,1), None, None),
+				coords = (9, 6),
+				left_child = KdNode((8, 1), None, None),
 				right_child = None
 			)
 		)
 
-		self.assertTrue(tree == expected)
+		self.assertEqual(result, expected)
 
 	def test_build_many_nodes_3(self):
 		'''
 		One more node than the previous test.
 		'''
-		df = self.coords_to_df([(2,7), (5,4), (9,6), (4,3), (8,1), (7,2), (10,3)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df(
+			[(2, 7), (5, 4), (9, 6), (4, 3), (8, 1), (7, 2), (10, 3)]
+		)
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (7,2),
+			coords = (7, 2),
 			left_child = KdNode(
-				coordinates = (5,4), 
-				left_child = KdNode((4,3), None, None),
-				right_child = KdNode((2,7), None, None)
+				coords = (5, 4),
+				left_child = KdNode((4, 3), None, None),
+				right_child = KdNode((2, 7), None, None)
 			),
 			right_child = KdNode(
-				coordinates = (10,3), 
-				left_child = KdNode((8,1), None, None),
-				right_child = KdNode((9,6), None, None)
+				coords = (10, 3),
+				left_child = KdNode((8, 1), None, None),
+				right_child = KdNode((9, 6), None, None)
 			)
 		)
 
-		self.assertTrue(tree == expected)
+		self.assertEqual(result, expected)
 
 	def test_build_many_nodes_4(self):
 		'''
 		One more node than the previous test.
 		'''
-		df = self.coords_to_df([(2,7), (5,4), (9,6), (4,3), (8,1), (7,2), (10,3), (11,0)])
-		tree = build_kd_tree(df)
+		df = self.coords_to_df(
+			[(2, 7), (5, 4), (9, 6), (4, 3), (8, 1), (7, 2), (10, 3), (11, 0)]
+		)
+		result = build_kd_tree(df)
 		expected = KdNode(
-			coordinates = (8,1),
+			coords = (8, 1),
 			left_child = KdNode(
-				coordinates = (5,4), 
+				coords = (5, 4),
 				left_child = KdNode(
-					coordinates = (7,2), 
-					left_child = KdNode((4,3), None, None), 
+					coords = (7, 2),
+					left_child = KdNode((4, 3), None, None),
 					right_child = None
 				),
-				right_child = KdNode((2,7), None, None)
+				right_child = KdNode((2, 7), None, None)
 			),
 			right_child = KdNode(
-				coordinates = (10,3), 
-				left_child = KdNode((11,0), None, None),
-				right_child = KdNode((9,6), None, None)
+				coords = (10, 3),
+				left_child = KdNode((11, 0), None, None),
+				right_child = KdNode((9, 6), None, None)
 			)
 		)
 
-		self.assertTrue(tree == expected)
-
-
-# if __name__ == '__main__':
-# 	unittest2.main()
+		self.assertEqual(result, expected)

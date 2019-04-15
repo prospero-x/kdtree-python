@@ -3,20 +3,34 @@ import pandas as pd
 import unittest2
 import random
 import uuid
-import time
+
+
+def find_closest_with_brute_force(neighbors_df, ref_location):
+	min_distance = 99999999999
+	closest_neighbor_name = closest_neighbor_coords = None
+	for name, coords in neighbors_df.iterrows():
+		d = distance(ref_location, tuple(coords))
+		if d < min_distance:
+			min_distance = d
+			closest_neighbor_name = name
+			closest_neighbor_coords = tuple(coords)
+
+	return closest_neighbor_name, closest_neighbor_coords
+
 
 class TestFindClosest(unittest2.TestCase):
 
 	@classmethod
 	def coords_to_df(cld, coords):
 		'''
-		Takes a list of N-dimensional points, with string labels and returns a pandas dataframe
-		in which each column X has an integer name and represents the value along
-		axis X. The index of each row is the first element of each tuple.
+		Takes a list of N-dimensional points, with string labels and returns a
+		pandas dataframe in which each column X has an integer name and
+		represents the value along axis X. The index of each row is the first
+		element of each tuple.
 
 		ex. coords: (('A', 1, 1, 1), ('B', 2, 4, 5), ('C', 3, 7, 5))
-			returns: 
-			   pd.DataFrame[
+			returns:
+				pd.DataFrame[
 							[   0  1  2]
 							[A  1  1  1]
 							[B  2  4  5]
@@ -42,8 +56,8 @@ class TestFindClosest(unittest2.TestCase):
 
 	def test_all_points_equal(self):
 		neighbors_coords = [
-			('A', 0,0),
-			('B', 0,0),
+			('A', 0, 0),
+			('B', 0, 0),
 		]
 
 		neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)
@@ -52,13 +66,13 @@ class TestFindClosest(unittest2.TestCase):
 		result = find_closest(ref_location, tree)
 
 		# Not testing the name here. The algorithm does not
-		# promise stable traversal of the tree. 
+		# promise stable traversal of the tree.
 		self.assertEqual(result.coordinates, (0, 0))
 
 	def test_all_neighbors_equal(self):
 		neighbors_coords = [
-			('A', 1.1,1.3),
-			('B', 1.1,1.3),
+			('A', 1.1, 1.3),
+			('B', 1.1, 1.3),
 		]
 
 		neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)
@@ -67,16 +81,15 @@ class TestFindClosest(unittest2.TestCase):
 		result = find_closest(ref_location, tree)
 
 		# Not testing the name here. The algorithm does not
-		# promise stable traversal of the tree. 
+		# promise stable traversal of the tree.
 		self.assertEqual(result.coordinates, (1.1, 1.3))
-
 
 	def test_inspection_of_both_sides_of_splitting_plane(self):
 		'''
 		While walking down the kdtree, find_closest chooses to inspect points
-		in the left_child or right_child of a node based on whether the 
+		in the left_child or right_child of a node based on whether the
 		ref_location is on the "left" or "right" side of the splitting plane
-		created by the node. 
+		created by the node.
 
 		If the ref_location is closer to the splitting plane than to the
 		current closest, then the true closest neighbor might be on the other
@@ -99,15 +112,15 @@ class TestFindClosest(unittest2.TestCase):
 		neighbors_df = TestFindClosest.coords_to_df(neighbors_coords)
 		ref_location = (3.36, 0.9)
 		tree = build_kd_tree(neighbors_df)
-		result= find_closest(ref_location, tree)
+		result = find_closest(ref_location, tree)
 		self.assertEqual(result.name, "E")
-		self.assertEqual(result.coordinates, (3.7,0.8))
+		self.assertEqual(result.coordinates, (3.7, 0.8))
 
 	def test_1000_random_02D_points(self):
 		total_runs = 5
 		for run_num in range(1, total_runs + 1):
 			print("Testing 1000 random 2D points, run %d/%d" % (run_num, total_runs))
-			
+
 			def rand_val():
 				# Choose values between -1 and 1.
 				r = random.randint(-1000, 1000)
@@ -126,7 +139,9 @@ class TestFindClosest(unittest2.TestCase):
 			ref_location = (rand_val(), rand_val())
 			tree = build_kd_tree(neighbors_df)
 			result = find_closest(ref_location, tree)
-			expected_name, expected_coords = find_closest_with_brute_force(neighbors_df, ref_location)
+			expected_name, expected_coords = find_closest_with_brute_force(
+				neighbors_df, ref_location
+			)
 			self.assertEqual(result.name, expected_name)
 			self.assertEqual(result.coordinates, expected_coords)
 
@@ -134,7 +149,7 @@ class TestFindClosest(unittest2.TestCase):
 		total_runs = 5
 		for run_num in range(1, total_runs + 1):
 			print("Testing 1000 random 10D points, run %d/%d" % (run_num, total_runs))
-			
+
 			def rand_val():
 				# Choose values between -1 and 1.
 				r = random.randint(-1000, 1000)
@@ -153,22 +168,8 @@ class TestFindClosest(unittest2.TestCase):
 			ref_location = (rand_val(), rand_val())
 			tree = build_kd_tree(neighbors_df)
 			result = find_closest(ref_location, tree)
-			expected_name, expected_coords = find_closest_with_brute_force(neighbors_df, ref_location)
+			expected_name, expected_coords = find_closest_with_brute_force(
+				neighbors_df, ref_location
+			)
 			self.assertEqual(result.name, expected_name)
 			self.assertEqual(result.coordinates, expected_coords)
-
-def find_closest_with_brute_force(neighbors_df, ref_location):
-	min_distance = 99999999999
-	closest_neighbor_name = closest_neighbor_coords = None
-	for name, coords in neighbors_df.iterrows():
-		d = distance(ref_location, tuple(coords))
-		if d < min_distance:
-			min_distance = d
-			closest_neighbor_name = name
-			closest_neighbor_coords = tuple(coords)
-
-	return closest_neighbor_name, closest_neighbor_coords
-
-
-if __name__ == '__main__':
-	unittest2.main()

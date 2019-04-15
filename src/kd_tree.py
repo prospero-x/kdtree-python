@@ -1,10 +1,10 @@
-import json
 from .stack import Stack
 from .distance import distance
 
+
 class KdNode:
-	def __init__(self, coordinates, left_child, right_child, name = None, axis = 0):
-		self.coordinates = coordinates
+	def __init__(self, coords, left_child, right_child, name = None, axis = 0):
+		self.coordinates = coords
 		self.name = name
 		self.left_child = left_child
 		self.right_child = right_child
@@ -36,14 +36,13 @@ class KdNode:
 		return distance(ref_location, closest_plane_point)
 
 	def __eq__(self, other):
-		# Checks if all children under this node are equal to all children under 
-		# "other"
+		# Return True if all children under this node are equal to all children
+		# under "other"
 		if not isinstance(other, KdNode):
 			return False
 
 		node_pair_stack = Stack()
 		node_pair_stack.push((self, other))
-
 
 		while not node_pair_stack.empty():
 
@@ -53,19 +52,23 @@ class KdNode:
 			if my_node.coordinates != other_node.coordinates:
 				return False
 
-			# Left Child nonetype checks. 
-			if my_node.left_child is None and other_node.left_child is not None:
+			# Left Child nonetype checks.
+			if (my_node.left_child is None and
+						other_node.left_child is not None):
 				return False
 
 			elif my_node.left_child is not None:
-				node_pair_stack.push((my_node.left_child, other_node.left_child))
+				next_pair = (my_node.left_child, other_node.left_child)
+				node_pair_stack.push(next_pair)
 
 			# Right Child nonetype checks.
-			if my_node.right_child is None and other_node.right_child is not None:
+			if (my_node.right_child is None and
+						other_node.right_child is not None):
 				return False
 
 			elif my_node.right_child is not None:
-				node_pair_stack.push((my_node.right_child, other_node.right_child))
+				next_pair = (my_node.right_child, other_node.right_child)
+				node_pair_stack.push(next_pair)
 
 		return True
 

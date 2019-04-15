@@ -1,25 +1,26 @@
 from src import find_closest, build_kd_tree
 import pandas as pd
 import requests
+import sys
 
 
 # Free City of Chicago API, containing JSON data for CTA Train stations
 URL = "https://data.cityofchicago.org/resource/8mj8-j3c4.json"
 
-# Usually, something like Apache Thrift is better for serialization. 
+# Usually, something like Apache Thrift is better for serialization.
 # However, Pandas dataframes are surprisingly performant with pickle.
 PICKLE_FILENAME = "example/pickled_data.gz"
 
 
 def download_data():
 	'''
-	Downloads the CTA Train Station locations from the web, 
+	Downloads the CTA Train Station locations from the web,
 	and formats in into a Pandas Dataframe for use by the KDTree.
 	'''
 	response = requests.get(URL)
 	if response.status_code != requests.codes.ok:
-		logger.fatal(
-			"Response status was '%s'" % response.status_code + 
+		print(
+			"Response status was '%s'" % response.status_code +
 			" when requesting '%s'." % URL
 		)
 		sys.exit(1)
