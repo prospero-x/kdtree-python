@@ -33,3 +33,8 @@ To test, simply run
 ```bash
 pytest
 ```
+
+Settings re in setup.cfg.
+
+#### Style
+You should regularly run `flake8` from the root of the project. Certain warnings are ignored as defined in setup.cfg.
